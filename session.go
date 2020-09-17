@@ -339,6 +339,11 @@ func (s *session) dropQueued() {
 }
 
 func (s *session) sendBytes(msg []byte) {
+	if s.messageOut == nil {
+		s.log.OnEventf("Failed to send: disconnected")
+		return
+	}
+
 	s.log.OnOutgoing(msg)
 	s.messageOut <- msg
 	s.stateTimer.Reset(s.HeartBtInt)
